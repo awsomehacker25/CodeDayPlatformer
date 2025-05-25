@@ -82,8 +82,8 @@ class Game():
         min_width = 100
         max_width = 250
         min_y = 250  # highest platform
-        max_y = HEIGHT - 150  # lowest platform (above ground)
-        max_vertical_diff = 80  # max vertical jump height
+        max_y = HEIGHT - 200 # lowest platform (above ground)
+        max_vertical_diff = 75  # max vertical jump height
 
         last_y = 450  # start height
 
@@ -279,9 +279,14 @@ class Game():
         at_level_end = self.player.rect.right >= LEVEL_WIDTH
 
         if all_coins_collected and at_level_end and not self.level_complete:
-            pygame.mixer.Channel(2).play(pygame.mixer.Sound('music/lvlcomplete.wav'))
-            self.level_complete = True
-            self.level_complete_time = pygame.time.get_ticks()
+            if self.level != 4:
+                pygame.mixer.Channel(2).play(pygame.mixer.Sound('music/lvlcomplete.wav'))
+                self.level_complete = True
+                self.level_complete_time = pygame.time.get_ticks()
+            else:
+                pygame.mixer.Channel(2).play(pygame.mixer.Sound('music/success.mp3'))
+                self.level_complete = True
+                self.level_complete_time = pygame.time.get_ticks()
         
         if self.level_complete:
             if self.level == 4 and not self.game_finished:
@@ -424,7 +429,7 @@ class Game():
         #     self.platforms.add(plat)
         #     self.all_sprites.add(plat)
 
-        platform_x = 100  # starting X after ground
+        platform_x = 50  # starting X after ground
         platform_count = 10
         min_gap = 200  # minimum horizontal gap between platforms
         max_gap = 350  # maximum horizontal gap
@@ -432,7 +437,7 @@ class Game():
         max_width = 250
         min_y = 250  # highest platform
         max_y = HEIGHT - 200  # lowest platform (above ground)
-        max_vertical_diff = 80  # max vertical jump height
+        max_vertical_diff = 75  # max vertical jump height
 
         last_y = 450  # start height
 
