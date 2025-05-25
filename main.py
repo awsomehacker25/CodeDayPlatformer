@@ -73,14 +73,14 @@ class Game():
         #     plat = Platform(*pos)
         #     self.platforms.add(plat)
         #     self.all_sprites.add(plat)
-        platform_x = 100  # starting X after ground
+        platform_x = 50  # starting X after ground
         platform_count = 10
         min_gap = 200  # minimum horizontal gap between platforms
         max_gap = 350  # maximum horizontal gap
         min_width = 100
         max_width = 250
         min_y = 250  # highest platform
-        max_y = HEIGHT - 160  # lowest platform (above ground)
+        max_y = HEIGHT - 155  # lowest platform (above ground)
         max_vertical_diff = 80  # max vertical jump height
 
         last_y = 450  # start height
