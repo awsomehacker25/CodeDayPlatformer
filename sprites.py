@@ -16,23 +16,25 @@ class Player(pygame.sprite.Sprite):
         self.clock = pygame.time.Clock()
         self.dx = 0
         self.dy = 0
-    
-    def animate(self):
-        dt = self.clock.tick(60)/1000
-        self.frame_index = self.frame_index + self.animation_speed * dt if self.dx != 0 else 0
-        self.image = self.frames[int(self.frame_index) % len(self.frames)]
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * self.scale, self.image.get_height() * self.scale))
 
+    def animate(self):
+        if self.dx != 0:
+            dt = self.clock.tick(60) / 1000
+            self.frame_index += self.animation_speed * dt
+            self.image = self.frames[int(self.frame_index) % len(self.frames)]
+        else:
+            self.frame_index = 0
+            self.image = self.frames[0]
+
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * self.scale, self.image.get_height() * self.scale))
 
     def update(self, keys):
         self.dx = 0
         self.dy = 0
         if keys[pygame.K_a]:
             self.dx = -self.speed
-            self.animate()
         if keys[pygame.K_d]:
             self.dx = self.speed
-            self.animate()
 
         if keys[pygame.K_w] and self.on_ground:
             self.vel_y = -15
@@ -43,15 +45,10 @@ class Player(pygame.sprite.Sprite):
             self.vel_y = 10
         self.dy += self.vel_y
 
-        # if self.rect.bottom + dy >= HEIGHT - 40:
-        #     dy = HEIGHT - 40 - self.rect.bottom
-        #     self.on_ground = True
-        #     self.vel_y = 0
-
         self.rect.x += self.dx
         self.rect.y += self.dy
-        # self.animate()
 
+        self.animate()
 
         if self.rect.left < 0:
             self.rect.left = 0
