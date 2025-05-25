@@ -47,15 +47,17 @@ class Game():
 
         self.safe_zones = pygame.sprite.Group()
 
-        self.left_safe = SafeZone(0, HEIGHT - 40, 300, 40)
+        self.left_safe = SafeZone(0, HEIGHT - 40.55, 300, 40)
 
-        self.right_safe = SafeZone(3000 - 300, HEIGHT - 40, 300, 40)
+        self.right_safe = SafeZone(3000 - 300, HEIGHT - 40.55, 300, 40)
 
         self.safe_zones.add(self.left_safe, self.right_safe)
 
         self.username = None
         self.start_time = None
         self.final_time = None
+
+        self.in_safe_zone = True
 
         # platform_positions = [
         #     (300, 450, 200, 30),
@@ -80,7 +82,7 @@ class Game():
         min_width = 100
         max_width = 250
         min_y = 250  # highest platform
-        max_y = HEIGHT - 155  # lowest platform (above ground)
+        max_y = HEIGHT - 150  # lowest platform (above ground)
         max_vertical_diff = 80  # max vertical jump height
 
         last_y = 450  # start height
@@ -248,18 +250,17 @@ class Game():
             self.score += len(coin_hits)
             for coin in coin_hits:
                 self.all_sprites.remove(coin)
-        
-        # if self.player.rect.bottom >= HEIGHT - 40:
-        #     in_safe_zone = False
-        #     for safe_zone in self.safe_zones:
-        #         if self.player.rect.colliderect(self.left_safe.rect):
-        #             in_safe_zone = True
-        #             break
-        #     if not in_safe_zone:
-        #         print("Player touched dangerous ground — exiting game.")
-        #         pygame.quit()
-        #         sys.exit()
 
+        self.in_safe_zone = any(self.player.rect.colliderect(safe_zone.rect) for safe_zone in self.safe_zones)
+
+        if self.player.rect.bottom >= HEIGHT - 40 and not self.in_safe_zone:
+            print("Player touched dangerous ground outside the safe zone — resetting to the beginning of the level.")
+            self.player.rect.x = 100
+            self.player.rect.y = HEIGHT - 150
+            self.scroll = 0 
+        elif self.player.rect.bottom >= HEIGHT - 40 and self.in_safe_zone:
+            self.player.rect.bottom = HEIGHT - 40
+            self.player.dy = 0
         
         if self.player.rect.centerx - self.scroll > WIDTH * 0.6:
             self.scroll = self.player.rect.centerx - WIDTH * 0.6
@@ -390,9 +391,9 @@ class Game():
 
         self.safe_zones = pygame.sprite.Group()
 
-        left_safe = SafeZone(0, HEIGHT - 40, 300, 40)
+        left_safe = SafeZone(0, HEIGHT - 40.55, 300, 40)
 
-        right_safe = SafeZone(3000 - 300, HEIGHT - 40, 300, 40)
+        right_safe = SafeZone(3000 - 300, HEIGHT - 40.55, 300, 40)
 
         self.safe_zones.add(left_safe, right_safe)
 
