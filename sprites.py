@@ -16,6 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.clock = pygame.time.Clock()
         self.dx = 0
         self.dy = 0
+        self.facing_left = False
 
     def animate(self):
         if self.dx != 0:
@@ -26,6 +27,8 @@ class Player(pygame.sprite.Sprite):
             self.frame_index = 0
             self.image = self.frames[0]
 
+        if self.facing_left:
+            self.image = pygame.transform.flip(self.image, True, False)
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * self.scale, self.image.get_height() * self.scale))
 
     def update(self, keys):
@@ -33,8 +36,10 @@ class Player(pygame.sprite.Sprite):
         self.dy = 0
         if keys[pygame.K_a]:
             self.dx = -self.speed
+            self.facing_left = True
         if keys[pygame.K_d]:
             self.dx = self.speed
+            self.facing_left = False
 
         if keys[pygame.K_w] and self.on_ground:
             self.vel_y = -15
