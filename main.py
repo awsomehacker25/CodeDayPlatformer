@@ -59,6 +59,10 @@ class Game():
 
         self.in_safe_zone = True
 
+        self.lives = 3
+        self.heart_image = pygame.image.load(join('images', 'heart.png'))
+        self.heart_image = pygame.transform.scale(self.heart_image, (30, 30))
+
         # platform_positions = [
         #     (300, 450, 200, 30),
         #     (600, 400, 180, 30),
@@ -255,6 +259,13 @@ class Game():
 
         if self.player.rect.bottom >= HEIGHT - 40 and not self.in_safe_zone:
             print("Player touched dangerous ground outside the safe zone — resetting to the beginning of the level.")
+            self.lives -= 1
+            if self.lives <= 0:
+                print("Game Over! You lost all your lives.")
+                self.draw()
+                self.display_game_over()
+                pygame.quit()
+                sys.exit()
             self.player.rect.x = 100
             self.player.rect.y = HEIGHT - 150
             self.scroll = 0 
@@ -341,6 +352,10 @@ class Game():
             elapsed_time = time.time() - self.start_time
             timer_text = self.font.render(f"Time: {elapsed_time:.2f}s", True, (255, 255, 255) if self.level == 4 else (0, 0, 0))
         self.screen.blit(timer_text, (WIDTH - 150, 10))
+
+        # Draw lives (hearts)
+        for i in range(self.lives):
+            self.screen.blit(self.heart_image, (WIDTH - 120 + i * 35, 50))
 
         if self.level_complete:
             if self.level != 4:
@@ -500,6 +515,12 @@ class Game():
         pygame.quit()
         sys.exit()
 
+    def display_game_over(self):
+        game_over_text = self.font.render("You Lose :(", True, (255, 0, 0))
+        text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
+        self.screen.blit(game_over_text, text_rect)
+        pygame.display.flip()
+        pygame.time.delay(3000)
 
 if __name__ == '__main__':
     game = Game()
